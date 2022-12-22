@@ -28,6 +28,8 @@ steganographyrs --help
 
 ```sh
 steganographyrs -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png
+// or
+cargo run -- -e true -p secret -i testAssets/prestine.png -o out.png -m "My Secret Message"
 ```
 
 ## Encrypting an Image from Standard Input
@@ -38,7 +40,7 @@ echo "My Secret Message" | steganographyrs -e true -p secret -i testAssets/prest
 ## Encrypting an Image from a File
 
 ```sh
-echo "My Secret Message" | steganographyrs -e true -p secret -i testAssets/prestine.png -o out.png
+cat message.txt | steganographyrs -e true -p secret -i testAssets/prestine.png -o out.png
 ```
 
 ## Decrypting an Image in the Standard Output (Terminal)

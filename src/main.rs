@@ -1,41 +1,28 @@
-use atty::Stream;
+/* use atty::Stream;
+use std::io::BufRead; */
 use clap::Parser;
 use std::process;
-use std::{fs, io};
-
 use steganographyrs::steganography_lib::function::{add_message_to_image, get_message_from_image};
-use steganographyrs::steganography_lib::options::SteganographyOption;
-
-#[derive(Parser)]
-#[command(author, version, about, long_about = None)] // Read from `Cargo.toml`
-struct Cli {
-    #[arg(short, long)]
-    message: Option<String>,
-
-    #[arg(short, long)]
-    password: Option<String>,
-
-    #[arg(short, long)]
-    input_image_path: Option<String>,
-
-    #[arg(short, long)]
-    output_image_path: Option<String>,
-
-    #[arg(short, long)]
-    encrypt_mode: Option<bool>,
-}
+use steganographyrs::steganography_lib::options::{extract_options, SteganographyOption, CliData};
 
 fn main() {
-    let args = Cli::parse();
-    let options = extract_options(args);
-    /*     let image_input: Box<dyn io::Read>;
+    /*     let piped_message: String;
+    if atty::isnt(Stream::Stdin) {
+        let mut input = String::new();
+        let all_lines = io::stdin().lock().lines();
+        println!("{:?}", all_lines);
+    } */
 
-       if atty::is(Stream::Stdin) {
-           image_input = Box::new(fs::File::open(args.input_image_path.unwrap()).unwrap());
-       } else {
-           image_input = Box::new(io::stdin());
-       }
-    */
+    let args = CliData::parse();
+    let options = extract_options(args);
+    // let image_input: Box<dyn io::Read>;
+
+    // if atty::is(Stream::Stdin) {
+    //     image_input = Box::new(fs::File::open(args.input_image_path.unwrap()).unwrap());
+    // } else {
+    //     image_input = Box::new(io::stdin());
+    // }
+
     match options {
         Ok(SteganographyOption) => match Some(SteganographyOption) {
             Some(SteganographyOption::Encrypt { .. }) => {
@@ -50,30 +37,4 @@ fn main() {
     }
 
     process::exit(0);
-}
-
-fn extract_options(args: Cli) -> Result<SteganographyOption, String> {
-    Ok(match args.encrypt_mode {
-        Some(i) => match i {
-            true => SteganographyOption::Encrypt {
-                message: args
-                    .message
-                    .unwrap_or_else(|| panic!("Message is required")),
-                password: args.password.unwrap_or("default".to_string()),
-                input_image_path: args
-                    .input_image_path
-                    .unwrap_or_else(|| panic!("Input image path")),
-                output_image_path: args
-                    .output_image_path
-                    .unwrap_or_else(|| panic!("Output image path is required")),
-            },
-            false => SteganographyOption::Decrypt {
-                password: args.password.unwrap_or("default".to_string()),
-                input_image_path: args
-                    .input_image_path
-                    .unwrap_or_else(|| panic!("Input image is required")),
-            },
-        },
-        None => panic!("Encrypt mode is required"),
-    })
 }
