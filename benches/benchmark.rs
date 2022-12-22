@@ -11,3 +11,4 @@ criterion_group!(
     targets = all_benchmarks
 );
 criterion_main!(benches);
+

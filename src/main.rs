@@ -61,3 +61,4 @@ fn extract_options(args: Cli) -> SteganographyOption {
         None => panic!("Encrypt mode is required"),
     }
 }
+

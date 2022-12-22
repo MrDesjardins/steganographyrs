@@ -19,3 +19,4 @@ pub enum SteganographyOption {
         input_image_path: String,
     }
 }
+
