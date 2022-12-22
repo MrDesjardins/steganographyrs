@@ -18,7 +18,40 @@ cargo add steganographyrs
 
 # Consumer of the CLI
 
+You must have some arguments like the mode you want to execute (encrypt, decrypt). You can see all options by using `--help` or `-h` 
 
+```sh
+steganographyrs --help
+```
+
+## Encrypting an Image from a String
+
+```sh
+steganographyrs -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png
+```
+
+## Encrypting an Image from Standard Input
+
+```sh
+echo "My Secret Message" | steganographyrs -e true -p secret -i testAssets/prestine.png -o out.png
+```
+## Encrypting an Image from a File
+
+```sh
+echo "My Secret Message" | steganographyrs -e true -p secret -i testAssets/prestine.png -o out.png
+```
+
+## Decrypting an Image in the Standard Output (Terminal)
+
+```sh
+steganographyrs -e false -p secret -i testAssets/prestine.png
+```
+
+## Decrypting an Image Message into a File
+
+```sh
+steganographyrs -e false -p secret -i testAssets/prestine.png >> message.txt
+```
 
 ## How to use?
 
@@ -60,6 +93,13 @@ sudo apt install gnuplot
 
 # To confirm that it is properly installed:
 which gnuplot
+```
+
+## Execute
+
+To get all options
+```
+cargo run -- -h
 ```
 
 ## Tests

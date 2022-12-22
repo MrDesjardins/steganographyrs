@@ -6,10 +6,10 @@ pub struct CliOptions<'a> {
     pub encrypt_mode: Option<bool>,
 }
 
-
 #[derive(Clone)]
 pub enum SteganographyOption {
     Encrypt {
+        message: String,
         password: String,
         input_image_path: String,
         output_image_path: String,
@@ -17,6 +17,5 @@ pub enum SteganographyOption {
     Decrypt {
         password: String,
         input_image_path: String,
-    }
+    },
 }
-
