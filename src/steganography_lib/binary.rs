@@ -1,3 +1,5 @@
+use image::{ImageBuffer, Rgba};
+
 use super::constants::NUMBER_BIT_PER_BYTE;
 
 /*
@@ -50,9 +52,38 @@ pub fn get_minimum_image_size_byte_required(message: String) -> usize {
     total_letter * NUMBER_BIT_PER_BYTE as usize
 }
 
+pub fn is_buffer_big_enough_for_message(
+    message: String,
+    buffer: ImageBuffer<Rgba<u8>, Vec<u8>>,
+) -> bool {
+    return get_minimum_image_size_byte_required(message) <= buffer.len();
+}
+
 #[cfg(test)]
 mod test_get_string {
     use super::*;
+
+    #[test]
+    fn test_is_buffer_big_enough_for_message_buffer_bigger() {
+        let buffer = ImageBuffer::new(100, 100);
+        println!("Bigger: {}", buffer.len());
+        let result = is_buffer_big_enough_for_message("Bye".to_string(), buffer);
+        assert_eq!(result, true)
+    }
+    #[test]
+    fn test_is_buffer_big_enough_for_message_buffer_equal() {
+        let buffer = ImageBuffer::new(4, 4);
+        println!("Equal: {} vs {}", buffer.len(), get_minimum_image_size_byte_required("Hell".to_string()));
+        let result = is_buffer_big_enough_for_message("Hell".to_string(), buffer);
+        assert_eq!(result, true)
+    }
+    #[test]
+    fn test_is_buffer_big_enough_for_message_buffer_smaller() {
+        let buffer = ImageBuffer::new(1, 1);
+        println!("Smaller: {}", buffer.len());
+        let result = is_buffer_big_enough_for_message("Bye Bye".to_string(), buffer);
+        assert_eq!(result, false)
+    }
 
     #[test]
     fn test_get_minimum_image_size_byte_required_three_chars() {
