@@ -3,7 +3,7 @@ use std::io::BufRead; */
 use clap::Parser;
 use std::process;
 use steganographyrs::steganography_lib::function::{add_message_to_image, get_message_from_image};
-use steganographyrs::steganography_lib::options::{extract_options, SteganographyOption, CliData};
+use steganographyrs::steganography_lib::options::{extract_options, CliData, SteganographyOption};
 
 fn main() {
     /*     let piped_message: String;
@@ -16,7 +16,7 @@ fn main() {
     let args = CliData::parse();
     let options = extract_options(args);
     // let image_input: Box<dyn io::Read>;
-
+    // // https://phrohdoh.com/blog/read-from-file-or-stdin-rust/
     // if atty::is(Stream::Stdin) {
     //     image_input = Box::new(fs::File::open(args.input_image_path.unwrap()).unwrap());
     // } else {
@@ -24,14 +24,13 @@ fn main() {
     // }
 
     match options {
-        Ok(SteganographyOption) => match Some(SteganographyOption) {
-            Some(SteganographyOption::Encrypt { .. }) => {
-                add_message_to_image();
+        Ok(SteganographyOption) => match SteganographyOption {
+            SteganographyOption::Encrypt(n) => {
+                add_message_to_image(n);
             }
-            Some(SteganographyOption::Decrypt { .. }) => {
-                get_message_from_image();
+            SteganographyOption::Decrypt(n) => {
+                get_message_from_image(n);
             }
-            None => {}
         },
         Err(error) => panic!("{:?}", error),
     }
