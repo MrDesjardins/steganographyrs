@@ -35,8 +35,15 @@ pub fn char_to_binary_string(char_code: u8) -> String {
  * Extract a binary ("10011001") to a char
  **/
 pub fn binary_string_to_char(input: String) -> char {
-    let num = i8::from_str_radix(&input, 2).unwrap() as u8;
-    num as char
+    // let num = i8::from_str_radix(&input, 2).unwrap() as u8;
+    let num = u8::from_str_radix(&input, 2);
+    match num {
+        Ok(n) => n as u8 as char,
+        Err(err) => {
+            println!("{:?}", err);
+            '0'
+        }
+    }
 }
 
 /**
@@ -73,7 +80,11 @@ mod test_get_string {
     #[test]
     fn test_is_buffer_big_enough_for_message_buffer_equal() {
         let buffer = ImageBuffer::new(4, 4);
-        println!("Equal: {} vs {}", buffer.len(), get_minimum_image_size_byte_required("Hell".to_string()));
+        println!(
+            "Equal: {} vs {}",
+            buffer.len(),
+            get_minimum_image_size_byte_required("Hell".to_string())
+        );
         let result = is_buffer_big_enough_for_message("Hell".to_string(), buffer);
         assert_eq!(result, true)
     }
@@ -102,6 +113,18 @@ mod test_get_string {
         let result = binary_string_to_char("01000001".to_string());
         assert_eq!(result, 'A')
     }
+    #[test]
+    fn test_binary_string_to_char_eth() {
+        let result = binary_string_to_char("11010001".to_string());
+        assert_eq!(result, 'Ñ')
+    }
+
+    #[test]
+    fn test_str_radix() {
+        let result = u8::from_str_radix("11010001", 2).unwrap();
+        assert_eq!(result, 209);
+    }
+
     #[test]
     fn test_char_to_binary_string_code_2() {
         let result = char_to_binary_string(2);
