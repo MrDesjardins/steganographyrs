@@ -56,7 +56,7 @@ pub fn extract_options(args: CliData) -> Result<SteganographyOption, String> {
                     message: args
                         .message
                         .unwrap_or_else(|| panic!("Message is required")),
-                    password: args.password.unwrap_or("default".to_string()),
+                    password: args.password.unwrap_or_else(|| "default".to_string()),
                     input_image_path: args
                         .input_image_path
                         .unwrap_or_else(|| panic!("Input image path")),
@@ -67,7 +67,7 @@ pub fn extract_options(args: CliData) -> Result<SteganographyOption, String> {
             }),
             false => SteganographyOption::Decrypt({
                 SteganographyDecryptOption {
-                    password: args.password.unwrap_or("default".to_string()),
+                    password: args.password.unwrap_or_else(|| "default".to_string()),
                     input_image_path: args
                         .input_image_path
                         .unwrap_or_else(|| panic!("Input image is required")),

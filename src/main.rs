@@ -24,7 +24,7 @@ fn main() {
     // }
 
     match options {
-        Ok(SteganographyOption) => match SteganographyOption {
+        Ok(steganography_option) => match steganography_option {
             SteganographyOption::Encrypt(n) => {
                 add_message_to_image(n);
             }

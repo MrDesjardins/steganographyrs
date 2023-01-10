@@ -9,7 +9,7 @@ add them to the corresponding position of the byte being constructed
 pub fn unpack_bit(buffer_item: u8) -> u8 {
     // If the bufferItem (R or G or B or A) finish with a 1 (instead of of 0)
     let last_digit = buffer_item & (1 << 0);
-    return if last_digit == 0 { 0 } else { 1 };
+    u8::from(last_digit != 0)
 }
 
 /*
@@ -20,14 +20,14 @@ pub fn pack_bit(buffer_item: u8, bit: u8) -> u8 {
         return buffer_item & !(1 << 0);
     }
     // Else 1
-    return buffer_item | (1 << 0);
+    buffer_item | (1 << 0)
 }
 
 /**
  * Takes a char like 65 and convert it to "1001111";
  * Always return 8 bits
  **/
-pub fn char_to_binary_string(char_code: u8) -> String {
+pub fn char_to_binary_string(char_code: &u8) -> String {
     format!("{:08b}", char_code)
 }
 
@@ -38,7 +38,7 @@ pub fn binary_string_to_char(input: String) -> char {
     // let num = i8::from_str_radix(&input, 2).unwrap() as u8;
     let num = u8::from_str_radix(&input, 2);
     match num {
-        Ok(n) => n as u8 as char,
+        Ok(n) => n as char,
         Err(err) => {
             println!("{:?}", err);
             '0'
@@ -63,7 +63,7 @@ pub fn is_buffer_big_enough_for_message(
     message: String,
     buffer: ImageBuffer<Rgba<u8>, Vec<u8>>,
 ) -> bool {
-    return get_minimum_image_size_byte_required(message) <= buffer.len();
+    get_minimum_image_size_byte_required(message) <= buffer.len()
 }
 
 #[cfg(test)]
@@ -104,8 +104,13 @@ mod test_get_string {
 
     #[test]
     fn test_char_to_binary_string_code_65() {
-        let result = char_to_binary_string(65);
+        let result = char_to_binary_string(&65);
         assert_eq!(result, "01000001")
+    }
+    #[test]
+    fn test_char_to_binary_string_code_2() {
+        let result = char_to_binary_string(&2);
+        assert_eq!(result, "00000010")
     }
 
     #[test]
@@ -125,11 +130,6 @@ mod test_get_string {
         assert_eq!(result, 209);
     }
 
-    #[test]
-    fn test_char_to_binary_string_code_2() {
-        let result = char_to_binary_string(2);
-        assert_eq!(result, "00000010")
-    }
     #[test]
     fn test_unpack_number_finish_with_one() {
         let result = unpack_bit(0b000011u8);

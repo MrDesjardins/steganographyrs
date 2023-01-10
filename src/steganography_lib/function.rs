@@ -1,4 +1,4 @@
-use image::{GenericImageView, ImageBuffer, Pixel, Rgba, RgbaImage};
+use image::GenericImageView;
 
 use crate::steganography_lib::binary::{
     binary_string_to_char, char_to_binary_string, pack_bit, unpack_bit,
@@ -34,13 +34,12 @@ pub fn add_message_to_image(options: SteganographyEncryptOption) {
     // See: https://docs.rs/image/0.20.1/image/struct.Rgba.html
     // and see : https://doc.rust-lang.org/nightly/std/primitive.array.html
 
-    for data_position in 0..data_bytes.len() {
-        let char_code = data_bytes[data_position];
+    for char_code in data_bytes {
         let char_binary = char_to_binary_string(char_code);
         let char_binary_bytes: Vec<u8> = char_binary
             .as_bytes()
-            .into_iter()
-            .map(|c| if *c == 48 { 0 } else { 1 })
+            .iter()
+            .map(|c| u8::from(*c != 48))
             .collect();
 
         let mut i = 0;
@@ -54,7 +53,7 @@ pub fn add_message_to_image(options: SteganographyEncryptOption) {
                 let bit = char_binary_bytes[i as usize];
                 let rgba = current_color[irgba]; // RGBA
                 new_rgba[irgba] = pack_bit(rgba, bit);
-                i+=1;
+                i += 1;
             }
             sliding_image_position += 1;
             new_img.put_pixel(coordinate.0, coordinate.1, image::Rgba(new_rgba));
@@ -69,8 +68,7 @@ pub fn get_message_from_image(options: SteganographyDecryptOption) -> String {
     let img = image::open(options.input_image_path).unwrap();
 
     let new_buffer = img.as_bytes();
-    let message = get_message_from_buffer(new_buffer);
-    return message;
+    get_message_from_buffer(new_buffer)
 }
 
 pub fn get_message_from_buffer(new_buffer: &[u8]) -> String {
@@ -98,7 +96,7 @@ pub fn get_message_from_buffer(new_buffer: &[u8]) -> String {
         bits = "".to_string();
     }
 
-    return result;
+    result
 }
 #[cfg(test)]
 mod test_get_string {
