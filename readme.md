@@ -3,7 +3,7 @@
 [<img alt="github" src="https://img.shields.io/badge/github-mrdesjardins/steganographyrs-8dagcb?labelColor=555555&logo=github" height="20">](https://github.com/MrDesjardins/steganographyrs)
 [<img alt="crates.io" src="https://img.shields.io/crates/v/steganographyrs.svg?color=fc8d62&logo=rust" height="20">](https://crates.io/crates/steganographyrs)
 [<img alt="docs.rs" src="https://img.shields.io/badge/docs.steganographyrs-66c2a5?labelColor=555555&logo=docs.rs" height="20">](https://docs.rs/steganographyrs/latest/steganographyrs)
-[![CI Build](https://github.com/MrDesjardins/steganographyrs/actions/workflows/rust.yml/badge.svg)](https://github.com/MrDesjardins/steganographyrs/actions/workflows/rust.yml)
+[![CI Build](https://github.com/MrDesjardins/steganographyrs/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/MrDesjardins/steganographyrs/actions/workflows/rust.yml)
 [![codecov](https://codecov.io/gh/MrDesjardins/steganographyrs/branch/main/graph/badge.svg?token=TWHYC1X1KQ)](https://codecov.io/gh/MrDesjardins/steganographyrs)
 
 Rust library that takes a number that represent a byte and returns a string that is prettier to read for a human
