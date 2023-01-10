@@ -55,19 +55,13 @@ steganographyrs -e false -p secret -i testAssets/prestine.png
 steganographyrs -e false -p secret -i testAssets/prestine.png >> message.txt
 ```
 
-## How to use?
+# Consumer of the Library?
 
-### Without Configuration Option
 
 ```rust
-use pretty_bytes_rust::pretty_bytes;
-let r1 = pretty_bytes(1024 * 1024 * 5 + 50000, None);
-assert_eq!(r1, "5.05 MB");
+use steganographyrs::steganography_rs;
+steganography_rs(steganography_option)
 ```
-
-### With Configuration Option - Specifying Decimal Precision
-
-
 
 # As a Developer of the Library
 
@@ -101,7 +95,7 @@ which gnuplot
 
 To get all options
 ```
-cargo run -- -h
+cargo run -- -help
 ```
 
 ## Tests
@@ -134,7 +128,7 @@ cargo doc --open
 ```
 ## Testing CLI
 
-All commands for the user works but instead of using `pretty-bytes-rust -n 12345` you need to use `cargo run -- -n 12345`
+All commands for the user works but instead of using `steganographyrs -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png` you need to use `cargo run -- -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png`
 
 # Benchmark
 
@@ -143,6 +137,16 @@ cargo bench
 ```
 
 # Publishing
+
+## Test the Cargo Content
+
+```sh
+cargo package --allow-dirty
+```
+
+Then go to `steganographyrs/target/package/` to see the content
+
+## Push a new Cargo Package
 
 ```sh
 cargo login

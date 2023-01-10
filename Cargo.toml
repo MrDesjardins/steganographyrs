@@ -8,6 +8,7 @@ homepage = "https://github.com/MrDesjardins/steganographyrs"
 repository = "https://github.com/MrDesjardins/steganographyrs"
 license = "Apache-2.0"
 keywords = ["Steganography", "hidden-message"]
+exclude = [".vscode", ".github", "testAssets", "*.png", "*.sh"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

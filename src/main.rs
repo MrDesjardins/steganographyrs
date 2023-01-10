@@ -2,8 +2,8 @@
 use std::io::BufRead; */
 use clap::Parser;
 use std::process;
-use steganographyrs::steganography_lib::function::{add_message_to_image, get_message_from_image};
-use steganographyrs::steganography_lib::options::{extract_options, CliData, SteganographyOption};
+use steganographyrs::steganography_lib::options::{extract_options, CliData};
+use steganographyrs::steganography_rs;
 
 fn main() {
     /*     let piped_message: String;
@@ -24,14 +24,7 @@ fn main() {
     // }
 
     match options {
-        Ok(steganography_option) => match steganography_option {
-            SteganographyOption::Encrypt(n) => {
-                add_message_to_image(n);
-            }
-            SteganographyOption::Decrypt(n) => {
-                get_message_from_image(n);
-            }
-        },
+        Ok(steganography_option) => steganography_rs(steganography_option),
         Err(error) => panic!("{:?}", error),
     }
 

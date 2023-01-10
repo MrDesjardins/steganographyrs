@@ -123,7 +123,11 @@ mod test_get_string {
         let result = binary_string_to_char("11010001".to_string());
         assert_eq!(result, 'Ñ')
     }
-
+    #[test]
+    fn test_binary_string_to_char_overflow() {
+        let result = binary_string_to_char("101000001".to_string());
+        assert_eq!(result, '0')
+    }
     #[test]
     fn test_str_radix() {
         let result = u8::from_str_radix("11010001", 2).unwrap();

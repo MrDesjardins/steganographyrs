@@ -1,5 +1,3 @@
-use image::GenericImageView;
-
 use crate::steganography_lib::binary::{
     binary_string_to_char, char_to_binary_string, pack_bit, unpack_bit,
 };
@@ -18,12 +16,11 @@ fn get_coordinate(position: u32, width: u32) -> (u32, u32) {
 }
 
 pub fn add_message_to_image(options: SteganographyEncryptOption) {
-    println!("Encrypt into an image");
     let data_to_add_with_eof = format!("{}{}", options.message, EOF_CHAR);
     let data_bytes = data_to_add_with_eof.as_bytes();
     let img = image::open(options.input_image_path).unwrap();
-    let exist_img_dimension = img.dimensions();
-    println!("dimensions {:?}", exist_img_dimension);
+    // let exist_img_dimension = img.dimensions();
+    // println!("dimensions {:?}", exist_img_dimension);
 
     // Modify
     let mut new_img = img.to_rgba8();
@@ -64,7 +61,6 @@ pub fn add_message_to_image(options: SteganographyEncryptOption) {
 }
 
 pub fn get_message_from_image(options: SteganographyDecryptOption) -> String {
-    println!("Decrypt from an image");
     let img = image::open(options.input_image_path).unwrap();
 
     let new_buffer = img.as_bytes();
@@ -78,9 +74,6 @@ pub fn get_message_from_buffer(new_buffer: &[u8]) -> String {
     let mut bit_counter = 0;
     let mut bits = String::new();
     while last_character != EOF_CHAR && data_position < new_buffer.len() {
-        if last_character == EOF_CHAR {
-            break;
-        }
         while bit_counter < NUMBER_BIT_PER_BYTE {
             let rgba_color = new_buffer[data_position];
             let bit = unpack_bit(rgba_color);
