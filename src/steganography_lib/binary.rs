@@ -2,7 +2,7 @@ use image::{ImageBuffer, Rgba};
 
 use super::constants::NUMBER_BIT_PER_BYTE;
 
-/*
+/**
 Reads the least significant bits of the pixel (Red, Green and Blue) and
 add them to the corresponding position of the byte being constructed
 */
@@ -12,7 +12,7 @@ pub fn unpack_bit(buffer_item: u8) -> u8 {
     u8::from(last_digit != 0)
 }
 
-/*
+/**
 Sets the least significant bit to 1 or 0 (depending on the bit to set)
 */
 pub fn pack_bit(buffer_item: u8, bit: u8) -> u8 {

@@ -6,7 +6,11 @@
 [![CI Build](https://github.com/MrDesjardins/steganographyrs/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/MrDesjardins/steganographyrs/actions/workflows/rust.yml)
 [![codecov](https://codecov.io/gh/MrDesjardins/steganographyrs/branch/main/graph/badge.svg?token=TWHYC1X1KQ)](https://codecov.io/gh/MrDesjardins/steganographyrs)
 
-Rust library that takes a number that represent a byte and returns a string that is prettier to read for a human
+steganography_rs is a Rust library that inject a message into an image. 
+
+The word steganography means to hide something. The definition is very high level. Hence, it has a variety of ways to accomplish the goal of steganography. This library relies on the least significant bits.
+
+[Blog Post about using the least significant bits](https://patrickdesjardins.com/blog/what-is-steganography-how-to-hide-text-in-image)
 
 # Consumer of the Library
 
@@ -24,7 +28,15 @@ You must have some arguments like the mode you want to execute (encrypt, decrypt
 steganographyrs --help
 ```
 
-## Encrypting an Image from a String
+# Hide a String without Encryption in an Image
+
+```sh
+steganographyrs -e true -m "My Secret Message" -i testAssets/prestine.png -o out.png
+// or
+cargo run -- -e true -i testAssets/prestine.png -o out.png -m "My Secret Message"
+```
+
+## Hide an Encrypted String in an Image
 
 ```sh
 steganographyrs -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png
@@ -43,13 +55,25 @@ echo "My Secret Message" | steganographyrs -e true -p secret -i testAssets/prest
 cat message.txt | steganographyrs -e true -p secret -i testAssets/prestine.png -o out.png
 ```
 
-## Decrypting an Image in the Standard Output (Terminal)
+## Recover a String in an Image in the Standard Output (Terminal)
+
+```sh
+steganographyrs -e false -i testAssets/prestine.png
+```
+
+## Recover an Encrypted String from an Image in the Standard Output (Terminal)
 
 ```sh
 steganographyrs -e false -p secret -i testAssets/prestine.png
 ```
 
-## Decrypting an Image Message into a File
+## Recover a String from an Image Message into a File
+
+```sh
+steganographyrs -e false -p secret -i testAssets/prestine.png >> message.txt
+```
+
+## Recover an Encrypted String in an Image Message into a File
 
 ```sh
 steganographyrs -e false -p secret -i testAssets/prestine.png >> message.txt
@@ -59,8 +83,8 @@ steganographyrs -e false -p secret -i testAssets/prestine.png >> message.txt
 
 
 ```rust
-use steganographyrs::steganography_rs;
-steganography_rs(steganography_option)
+use steganographyrs::steganography;
+steganography(steganography_option)
 ```
 
 # As a Developer of the Library
@@ -122,10 +146,12 @@ Then, you can run:
 Further explanation in the [Mozilla grcov website](https://github.com/mozilla/grcov)
 
 ## Documentation
+The documentation is generated from the source code using:
 
 ```sh
 cargo doc --open
 ```
+
 ## Testing CLI
 
 All commands for the user works but instead of using `steganographyrs -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png` you need to use `cargo run -- -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png`

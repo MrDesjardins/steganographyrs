@@ -1,7 +1,10 @@
+use magic_crypt::MagicCryptError;
+
 use crate::steganography_lib::binary::{
     binary_string_to_char, char_to_binary_string, pack_bit, unpack_bit,
 };
 
+use super::encryption::{encrypt_if_needed, decrypt_if_needed};
 use super::options::{SteganographyDecryptOption, SteganographyEncryptOption};
 
 const NUMBER_BIT_PER_BYTE: u8 = 8;
@@ -16,7 +19,8 @@ fn get_coordinate(position: u32, width: u32) -> (u32, u32) {
 }
 
 pub fn add_message_to_image(options: SteganographyEncryptOption) {
-    let data_to_add_with_eof = format!("{}{}", options.message, EOF_CHAR);
+    let data_to_insert = encrypt_if_needed(options.message, options.password);
+    let data_to_add_with_eof = format!("{}{}", data_to_insert, EOF_CHAR);
     let data_bytes = data_to_add_with_eof.as_bytes();
     let img = image::open(options.input_image_path).unwrap();
     // let exist_img_dimension = img.dimensions();
@@ -60,11 +64,12 @@ pub fn add_message_to_image(options: SteganographyEncryptOption) {
     new_img.save(options.output_image_path).unwrap();
 }
 
-pub fn get_message_from_image(options: SteganographyDecryptOption) -> String {
+pub fn get_message_from_image(options: SteganographyDecryptOption) -> Result<String, MagicCryptError> {
     let img = image::open(options.input_image_path).unwrap();
 
     let new_buffer = img.as_bytes();
-    get_message_from_buffer(new_buffer)
+    let msg = get_message_from_buffer(new_buffer);
+    decrypt_if_needed(msg, options.password)
 }
 
 pub fn get_message_from_buffer(new_buffer: &[u8]) -> String {
@@ -101,7 +106,7 @@ mod test_get_string {
             input_image_path: "testAssets/prestine.png".to_string(),
             message: "Bye".to_string(),
             output_image_path: "testAssets/out.png".to_string(),
-            password: "123".to_string(),
+            password: None,
         };
         add_message_to_image(options);
     }
@@ -131,9 +136,9 @@ mod test_get_string {
     fn test_get_message_from_image() {
         let options = SteganographyDecryptOption {
             input_image_path: "testAssets/out_message_Bye.png".to_string(),
-            password: "123".to_string(),
+            password: None,
         };
-        let message = get_message_from_image(options);
+        let message = get_message_from_image(options).unwrap();
         assert_eq!(message, "Bye".to_string());
     }
 

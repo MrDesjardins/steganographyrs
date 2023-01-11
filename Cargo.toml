@@ -15,6 +15,7 @@ exclude = [".vscode", ".github", "testAssets", "*.png", "*.sh"]
 clap = { version = "4.0", features = ["derive"] }
 atty = "0.2.14"
 image = "0.24.5"
+magic-crypt = "3.1.12"
 
 [dev-dependencies]
 criterion = "0.4.0"

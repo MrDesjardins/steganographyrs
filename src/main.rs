@@ -3,7 +3,7 @@ use std::io::BufRead; */
 use clap::Parser;
 use std::process;
 use steganographyrs::steganography_lib::options::{extract_options, CliData};
-use steganographyrs::steganography_rs;
+use steganographyrs::steganography;
 
 fn main() {
     /*     let piped_message: String;
@@ -24,9 +24,9 @@ fn main() {
     // }
 
     match options {
-        Ok(steganography_option) => steganography_rs(steganography_option),
+        Ok(steganography_option) => steganography(steganography_option),
         Err(error) => panic!("{:?}", error),
-    }
+    };
 
     process::exit(0);
 }
