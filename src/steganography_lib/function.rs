@@ -4,13 +4,20 @@ use crate::steganography_lib::binary::{
     binary_string_to_char, char_to_binary_string, pack_bit, unpack_bit,
 };
 
-use super::encryption::{encrypt_if_needed, decrypt_if_needed};
+use super::encryption::{decrypt_if_needed, encrypt_if_needed};
 use super::options::{SteganographyDecryptOption, SteganographyEncryptOption};
 
 const NUMBER_BIT_PER_BYTE: u8 = 8;
 
 const EOF_CHAR: char = 4u8 as char;
 
+/// From a 1d position, returns a 2d position using the width of the image
+///
+/// # Arguments
+///
+/// * `position` - The index position of the character in the string. Value varies from 0 to the length-1 of the text
+/// * `width` - The width of the image to determine when to change line (height)
+///
 fn get_coordinate(position: u32, width: u32) -> (u32, u32) {
     let y = position / width; // No decimal
     let x = position - (width * y);
@@ -18,6 +25,14 @@ fn get_coordinate(position: u32, width: u32) -> (u32, u32) {
     (x, y)
 }
 
+/// Add a string (message) into an image that is referenced by a path in the `options` argument
+///
+/// # Arguments
+///
+/// * `options` - Structure with the information about the message to insert and which image to use as
+///         the source and where to save the altered image that contain the secret message. The option contains
+///         the detail about if the message passed in the option must be encrypted
+///
 pub fn add_message_to_image(options: SteganographyEncryptOption) {
     let data_to_insert = encrypt_if_needed(options.message, options.password);
     let data_to_add_with_eof = format!("{}{}", data_to_insert, EOF_CHAR);
@@ -64,7 +79,17 @@ pub fn add_message_to_image(options: SteganographyEncryptOption) {
     new_img.save(options.output_image_path).unwrap();
 }
 
-pub fn get_message_from_image(options: SteganographyDecryptOption) -> Result<String, MagicCryptError> {
+/// Get a string (message) from an image that is referenced by a path in the `options` argument.
+/// It assumes the image was using `add_message_to_image` to find the hidden piece of information
+///
+/// # Arguments
+///
+/// * `options` - Structure with the where to find the image and detail about if the bytes retrieved
+///         need to be decrypted using the password provided (optional)
+///
+pub fn get_message_from_image(
+    options: SteganographyDecryptOption,
+) -> Result<String, MagicCryptError> {
     let img = image::open(options.input_image_path).unwrap();
 
     let new_buffer = img.as_bytes();
@@ -72,6 +97,14 @@ pub fn get_message_from_image(options: SteganographyDecryptOption) -> Result<Str
     decrypt_if_needed(msg, options.password)
 }
 
+/// Get an array of bytes to extract the char
+/// 
+/// # Arguments
+/// 
+/// * `new_buffer` - An array of bytes that represent the whole image. Each bytes are a part of
+///         the image colors. 
+///    The buffer has the pattern [R, G, B, A, R, G, B, A, ...]
+/// 
 pub fn get_message_from_buffer(new_buffer: &[u8]) -> String {
     let mut result = String::new();
     let mut data_position = 0;

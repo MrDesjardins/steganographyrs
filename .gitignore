@@ -11,3 +11,5 @@ Cargo.lock
 **/*.rs.bk
 
 .env
+
+/testAssets/delete_me.png

@@ -2,9 +2,10 @@
 use std::io::BufRead; */
 use clap::Parser;
 use std::process;
-use steganographyrs::steganography_lib::options::{extract_options, CliData};
+use steganographyrs::options::{extract_options, CliData};
 use steganographyrs::steganography;
 
+/// CLI access to the steganography library
 fn main() {
     /*     let piped_message: String;
     if atty::isnt(Stream::Stdin) {

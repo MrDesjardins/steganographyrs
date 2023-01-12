@@ -1,20 +1,28 @@
-use image::{ImageBuffer, Rgba};
-
-use super::constants::NUMBER_BIT_PER_BYTE;
-
-/**
-Reads the least significant bits of the pixel (Red, Green and Blue) and
-add them to the corresponding position of the byte being constructed
-*/
+/// Reads the least significant bits of the pixel (Red, Green, Blue, Alpha) and
+/// adds them to the corresponding position of the byte being constructed
+///
+/// # Arguments
+///
+///  * buffer_item - 8 bits number (E.g. 0b000011u8)
+///
+/// # Returns
+///
+/// Return 0 or 1 depending of the last bit of the buffer_item
+///
 pub fn unpack_bit(buffer_item: u8) -> u8 {
     // If the bufferItem (R or G or B or A) finish with a 1 (instead of of 0)
     let last_digit = buffer_item & (1 << 0);
     u8::from(last_digit != 0)
 }
 
-/**
-Sets the least significant bit to 1 or 0 (depending on the bit to set)
-*/
+/// Sets the least significant bit to 1 or 0 (depending on the bit to set)
+///
+/// # Arguments
+///  * buffer_item - 8 bits number (E.g. 0b000011u8)
+///  * bit - 0 or 1
+///
+/// # Returns
+/// Modified buffer_item with the last bit set to the bit passed by parameter
 pub fn pack_bit(buffer_item: u8, bit: u8) -> u8 {
     if bit == 0 {
         return buffer_item & !(1 << 0);
@@ -23,17 +31,24 @@ pub fn pack_bit(buffer_item: u8, bit: u8) -> u8 {
     buffer_item | (1 << 0)
 }
 
-/**
- * Takes a char like 65 and convert it to "1001111";
- * Always return 8 bits
- **/
+/// Takes a char like 65 and convert it to "1001111";
+///
+/// # Arguments
+///  * char_code - The ASCII value as a number (0 to 255)
+///
+/// # Returns
+/// Always a 8 characters string (8 bits)
 pub fn char_to_binary_string(char_code: &u8) -> String {
     format!("{:08b}", char_code)
 }
 
-/**
- * Extract a binary ("10011001") to a char
- **/
+/// Extract a binary ("10011001") to a char
+///
+/// # Arguments
+///  * input - A string of 8 characters shaped with only 1 and 0 characters
+///
+/// # Returns
+/// A character from the value of the input
 pub fn binary_string_to_char(input: String) -> char {
     // let num = i8::from_str_radix(&input, 2).unwrap() as u8;
     let num = u8::from_str_radix(&input, 2);
@@ -46,62 +61,10 @@ pub fn binary_string_to_char(input: String) -> char {
     }
 }
 
-/**
- * Evaluate the number of byte required for an image to embedded the desired message.
- *
- * Can be used to avoid inserting message on a small image or to choose in a collection
- * of image the best one to embedded the message.
- *
- * Assume the message as the EOF character
- **/
-pub fn get_minimum_image_size_byte_required(message: String) -> usize {
-    let total_letter = message.chars().count();
-    total_letter * NUMBER_BIT_PER_BYTE as usize
-}
-
-pub fn is_buffer_big_enough_for_message(
-    message: String,
-    buffer: ImageBuffer<Rgba<u8>, Vec<u8>>,
-) -> bool {
-    get_minimum_image_size_byte_required(message) <= buffer.len()
-}
-
 #[cfg(test)]
 mod test_get_string {
     use super::*;
-
-    #[test]
-    fn test_is_buffer_big_enough_for_message_buffer_bigger() {
-        let buffer = ImageBuffer::new(100, 100);
-        println!("Bigger: {}", buffer.len());
-        let result = is_buffer_big_enough_for_message("Bye".to_string(), buffer);
-        assert_eq!(result, true)
-    }
-    #[test]
-    fn test_is_buffer_big_enough_for_message_buffer_equal() {
-        let buffer = ImageBuffer::new(4, 4);
-        println!(
-            "Equal: {} vs {}",
-            buffer.len(),
-            get_minimum_image_size_byte_required("Hell".to_string())
-        );
-        let result = is_buffer_big_enough_for_message("Hell".to_string(), buffer);
-        assert_eq!(result, true)
-    }
-    #[test]
-    fn test_is_buffer_big_enough_for_message_buffer_smaller() {
-        let buffer = ImageBuffer::new(1, 1);
-        println!("Smaller: {}", buffer.len());
-        let result = is_buffer_big_enough_for_message("Bye Bye".to_string(), buffer);
-        assert_eq!(result, false)
-    }
-
-    #[test]
-    fn test_get_minimum_image_size_byte_required_three_chars() {
-        let result = get_minimum_image_size_byte_required("Bye".to_string());
-        assert_eq!(result, 24)
-    }
-
+    
     #[test]
     fn test_char_to_binary_string_code_65() {
         let result = char_to_binary_string(&65);
