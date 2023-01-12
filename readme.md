@@ -4,7 +4,7 @@
 [<img alt="crates.io" src="https://img.shields.io/crates/v/steganographyrs.svg?color=fc8d62&logo=rust" height="20">](https://crates.io/crates/steganographyrs)
 [<img alt="docs.rs" src="https://img.shields.io/badge/docs.steganographyrs-66c2a5?labelColor=555555&logo=docs.rs" height="20">](https://docs.rs/steganographyrs/latest/steganographyrs)
 [![CI Build](https://github.com/MrDesjardins/steganographyrs/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/MrDesjardins/steganographyrs/actions/workflows/rust.yml)
-[![codecov](https://codecov.io/gh/MrDesjardins/steganographyrs/branch/main/graph/badge.svg?token=TWHYC1X1KQ)](https://codecov.io/gh/MrDesjardins/steganographyrs)
+[![codecov](https://codecov.io/gh/MrDesjardins/steganographyrs/branch/master/graph/badge.svg?token=58EGU3M0A1)](https://codecov.io/gh/MrDesjardins/steganographyrs)
 
 steganography_rs is a Rust library that inject a message into an image. 
 
@@ -22,13 +22,15 @@ cargo add steganographyrs
 
 # Consumer of the CLI
 
-You must have some arguments like the mode you want to execute (encrypt, decrypt). You can see all options by using `--help` or `-h` 
+You must have some arguments like the mode you want to execute (encrypt, decrypt). If you want to use AES encryption, you need to provide your secret password with `-p`.
+
+You can see all options by using `--help` or `-h` 
 
 ```sh
 steganographyrs --help
 ```
 
-# Hide a String without Encryption in an Image
+## Hide a String without Encryption in an Image
 
 ```sh
 steganographyrs -e true -m "My Secret Message" -i testAssets/prestine.png -o out.png
@@ -149,7 +151,7 @@ Further explanation in the [Mozilla grcov website](https://github.com/mozilla/gr
 The documentation is generated from the source code using:
 
 ```sh
-cargo doc --open
+cargo doc --open  -document-private-items
 ```
 
 ## Testing CLI
