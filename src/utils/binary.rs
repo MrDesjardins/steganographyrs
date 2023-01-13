@@ -55,7 +55,7 @@ pub fn binary_string_to_char(input: String) -> char {
     match num {
         Ok(n) => n as char,
         Err(err) => {
-            println!("{:?}", err);
+            eprintln!("{:?}", err);
             '0'
         }
     }

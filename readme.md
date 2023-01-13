@@ -54,31 +54,41 @@ echo "My Secret Message" | steganographyrs -e true -p secret -i testAssets/prest
 ## Encrypting an Image from a File
 
 ```sh
-cat message.txt | steganographyrs -e true -p secret -i testAssets/prestine.png -o out.png
+cat testAssets/message1.txt | steganographyrs -e true -p secret -i testAssets/prestine.png -o out.png
+// or in dev:
+cat testAssets/message1.txt | cargo run -- -e true -i testAssets/prestine.png -o out.png 
 ```
 
 ## Recover a String in an Image in the Standard Output (Terminal)
 
 ```sh
 steganographyrs -e false -i testAssets/prestine.png
+// or in dev:
+cargo run -- -e false -i testAssets/prestine.png
 ```
 
 ## Recover an Encrypted String from an Image in the Standard Output (Terminal)
 
 ```sh
 steganographyrs -e false -p secret -i testAssets/prestine.png
+// or in dev:
+cargo run -- -e false -p secret -i testAssets/prestine.png
 ```
 
 ## Recover a String from an Image Message into a File
 
 ```sh
 steganographyrs -e false -p secret -i testAssets/prestine.png >> message.txt
+// or in dev:
+cargo run -- -e false -p secret -i testAssets/prestine.png >> message.txt
 ```
 
 ## Recover an Encrypted String in an Image Message into a File
 
 ```sh
 steganographyrs -e false -p secret -i testAssets/prestine.png >> message.txt
+// or in dev:
+cargo run -- -e false -p secret -i testAssets/prestine.png >> message.txt
 ```
 
 # Consumer of the Library?

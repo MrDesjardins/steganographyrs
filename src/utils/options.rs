@@ -65,30 +65,37 @@ pub struct SteganographyDecryptOption {
 /// Depending of the field *encrypt_mode*, the function returns
 /// the proper formed structure or panic telling what argument
 /// is missing
-/// 
+///
 /// # Arguments
 /// args - The command line argument that may contain encrypt or decrypt information
-/// 
+///
 /// # Returns
 /// Return a well formed structure for the task asked or return a failure with the missing
 /// fields
-pub fn extract_options(args: CliData) -> Result<SteganographyOption, String> {
+pub fn extract_options(
+    args: CliData,
+    piped_message: Option<String>,
+) -> Result<SteganographyOption, String> {
     Ok(match args.encrypt_mode {
         Some(i) => match i {
-            true => SteganographyOption::Encrypt({
-                SteganographyEncryptOption {
-                    message: args
-                        .message
-                        .unwrap_or_else(|| panic!("Message is required")),
-                    password: args.password,
-                    input_image_path: args
-                        .input_image_path
-                        .unwrap_or_else(|| panic!("Input image path")),
-                    output_image_path: args
-                        .output_image_path
-                        .unwrap_or_else(|| panic!("Output image path is required")),
-                }
-            }),
+            true => {
+                let message = piped_message.unwrap_or_else(|| {
+                    args.message
+                        .unwrap_or_else(|| panic!("Message is required"))
+                });
+                SteganographyOption::Encrypt({
+                    SteganographyEncryptOption {
+                        message: message,
+                        password: args.password,
+                        input_image_path: args
+                            .input_image_path
+                            .unwrap_or_else(|| panic!("Input image path")),
+                        output_image_path: args
+                            .output_image_path
+                            .unwrap_or_else(|| panic!("Output image path is required")),
+                    }
+                })
+            }
             false => SteganographyOption::Decrypt({
                 SteganographyDecryptOption {
                     password: args.password,
