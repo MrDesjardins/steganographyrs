@@ -1,9 +1,6 @@
 use magic_crypt::MagicCryptError;
 
-use crate::steganography_lib::binary::{
-    binary_string_to_char, char_to_binary_string, pack_bit, unpack_bit,
-};
-
+use super::binary::{binary_string_to_char, char_to_binary_string, pack_bit, unpack_bit};
 use super::encryption::{decrypt_if_needed, encrypt_if_needed};
 use super::options::{SteganographyDecryptOption, SteganographyEncryptOption};
 
@@ -98,13 +95,13 @@ pub fn get_message_from_image(
 }
 
 /// Get an array of bytes to extract the char
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `new_buffer` - An array of bytes that represent the whole image. Each bytes are a part of
-///         the image colors. 
+///         the image colors.
 ///    The buffer has the pattern [R, G, B, A, R, G, B, A, ...]
-/// 
+///
 pub fn get_message_from_buffer(new_buffer: &[u8]) -> String {
     let mut result = String::new();
     let mut data_position = 0;

@@ -92,14 +92,14 @@ steganographyrs -e true -p secret -m "My Secret Message" -i testAssets/prestine.
 - [Blog Post about using the least significant bits](https://patrickdesjardins.com/blog/what-is-steganography-how-to-hide-text-in-image)
 */
 
-mod steganography_lib;
+mod utils;
 
 // Imports
-use crate::steganography_lib::function::{add_message_to_image, get_message_from_image};
-use crate::steganography_lib::options::SteganographyOption;
+use crate::utils::function::{add_message_to_image, get_message_from_image};
+use crate::utils::options::SteganographyOption;
 
 // Re-export for external access
-pub use crate::steganography_lib::options;
+pub use crate::utils::options;
 
 pub fn steganography(options: SteganographyOption) -> Option<String> {
     match options {
@@ -119,7 +119,7 @@ pub fn steganography(options: SteganographyOption) -> Option<String> {
 
 #[cfg(test)]
 mod steganography {
-    use crate::steganography_lib::options::{
+    use crate::utils::options::{
         SteganographyDecryptOption, SteganographyEncryptOption,
     };
 
