@@ -2,7 +2,7 @@ use magic_crypt::MagicCryptError;
 
 use super::binary::{binary_string_to_char, char_to_binary_string, pack_bit, unpack_bit};
 use super::encryption::{decrypt_if_needed, encrypt_if_needed};
-use super::options::{SteganographyDecryptOption, SteganographyEncryptOption};
+use super::options::{SteganographyExtractOption, SteganographyInjectOption};
 
 const NUMBER_BIT_PER_BYTE: u8 = 8;
 
@@ -30,7 +30,7 @@ fn get_coordinate(position: u32, width: u32) -> (u32, u32) {
 ///         the source and where to save the altered image that contain the secret message. The option contains
 ///         the detail about if the message passed in the option must be encrypted
 ///
-pub fn add_message_to_image(options: SteganographyEncryptOption) {
+pub fn add_message_to_image(options: SteganographyInjectOption) {
     let data_to_insert = encrypt_if_needed(options.message, options.password);
     let data_to_add_with_eof = format!("{}{}", data_to_insert, EOF_CHAR);
     let data_bytes = data_to_add_with_eof.as_bytes();
@@ -85,7 +85,7 @@ pub fn add_message_to_image(options: SteganographyEncryptOption) {
 ///         need to be decrypted using the password provided (optional)
 ///
 pub fn get_message_from_image(
-    options: SteganographyDecryptOption,
+    options: SteganographyExtractOption,
 ) -> Result<String, MagicCryptError> {
     let img = image::open(options.input_image_path).unwrap();
 
@@ -132,7 +132,7 @@ mod test_get_string {
 
     #[test]
     fn test_add_message_to_image() {
-        let options = SteganographyEncryptOption {
+        let options = SteganographyInjectOption {
             input_image_path: "testAssets/prestine.png".to_string(),
             message: "Bye".to_string(),
             output_image_path: "testAssets/out.png".to_string(),
@@ -164,7 +164,7 @@ mod test_get_string {
 
     #[test]
     fn test_get_message_from_image() {
-        let options = SteganographyDecryptOption {
+        let options = SteganographyExtractOption {
             input_image_path: "testAssets/out_message_Bye.png".to_string(),
             password: None,
         };

@@ -6,11 +6,15 @@
 [![CI Build](https://github.com/MrDesjardins/steganographyrs/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/MrDesjardins/steganographyrs/actions/workflows/rust.yml)
 [![codecov](https://codecov.io/gh/MrDesjardins/steganographyrs/branch/master/graph/badge.svg?token=58EGU3M0A1)](https://codecov.io/gh/MrDesjardins/steganographyrs)
 
-steganography_rs is a Rust library that inject a message into an image. 
+steganographyrs is a Rust library that inject a message into an image. 
+
+![](./readmeAssets/extract_workflow.png)
 
 The word steganography means to hide something. The definition is very high level. Hence, it has a variety of ways to accomplish the goal of steganography. This library relies on the least significant bits.
 
-[Blog Post about using the least significant bits](https://patrickdesjardins.com/blog/what-is-steganography-how-to-hide-text-in-image)
+# What is Least Significant Bits?
+
+1) [Blog Post about using the least significant bits](https://patrickdesjardins.com/blog/what-is-steganography-how-to-hide-text-in-image)
 
 # Consumer of the Library
 
@@ -28,75 +32,96 @@ You can see all options by using `--help` or `-h`
 
 ```sh
 steganographyrs --help
+// or in dev:
+cargo run -- help
 ```
 
 ## Hide a String without Encryption in an Image
 
+![](./readmeAssets/inject_workflow_example.png)
+
 ```sh
-steganographyrs -e true -m "My Secret Message" -i testAssets/prestine.png -o out.png
-// or
-cargo run -- -e true -i testAssets/prestine.png -o out.png -m "My Secret Message"
+steganographyrs -e inject -m "My Secret Message" -i testAssets/prestine.png -o out.png
+// or in dev:
+cargo run -- -e inject -i testAssets/prestine.png -o out.png -m "My Secret Message"
 ```
 
 ## Hide an Encrypted String in an Image
 
-```sh
-steganographyrs -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png
-// or
-cargo run -- -e true -p secret -i testAssets/prestine.png -o out.png -m "My Secret Message"
-```
-
-## Encrypting an Image from Standard Input
+![](./readmeAssets/inject_workflow_secret.png)
 
 ```sh
-echo "My Secret Message" | steganographyrs -e true -p secret -i testAssets/prestine.png -o out.png
-```
-## Encrypting an Image from a File
-
-```sh
-cat testAssets/message1.txt | steganographyrs -e true -p secret -i testAssets/prestine.png -o out.png
+steganographyrs -e inject -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png
 // or in dev:
-cat testAssets/message1.txt | cargo run -- -e true -i testAssets/prestine.png -o out.png 
+cargo run -- -e inject -p secret -i testAssets/prestine.png -o out.png -m "My Secret Message"
 ```
 
-## Recover a String in an Image in the Standard Output (Terminal)
+## Hide an String from Standard Input, Encrypt the message into an Image
+
+![](./readmeAssets/inject_workflow_pipe_with_secret.png)
 
 ```sh
-steganographyrs -e false -i testAssets/prestine.png
+echo "My Secret Message" | steganographyrs -e inject -p secret -i testAssets/prestine.png -o out.png
+```
+## Hide an String from an external via by using the Standard Input, Encrypt the message into an Image
+
+![](./readmeAssets/inject_workflow_pipe_with_secret.png)
+
+```sh
+cat testAssets/message1.txt | steganographyrs -e inject -p secret -i testAssets/prestine.png -o out.png
 // or in dev:
-cargo run -- -e false -i testAssets/prestine.png
+cat testAssets/message1.txt | cargo run -- -e inject -i testAssets/prestine.png -o out.png 
 ```
 
-## Recover an Encrypted String from an Image in the Standard Output (Terminal)
+## Recover a String in an Image in the Terminal Standard Output
+
+![](./readmeAssets/extract_workflow.png)
 
 ```sh
-steganographyrs -e false -p secret -i testAssets/prestine.png
+steganographyrs -e extract -i testAssets/image_with_secret_message.png
 // or in dev:
-cargo run -- -e false -p secret -i testAssets/prestine.png
+cargo run -- -e extract -i testAssets/image_with_secret_message.png
+```
+The result is sent into the standard output
+
+## Recover an Encrypted String from an Image in the Terminal Standard Output
+
+![](./readmeAssets/extract_workflow_encrypted.png)
+
+```sh
+steganographyrs -e extract -p secret -i testAssets/image_with_secret_message.png
+// or in dev:
+cargo run -- -e extract -p secret -i testAssets/image_with_secret_message.png
 ```
 
 ## Recover a String from an Image Message into a File
 
+![](./readmeAssets/extract_workflow_into_file_no_encrypted.png)
+
+
 ```sh
-steganographyrs -e false -p secret -i testAssets/prestine.png >> message.txt
+steganographyrs -e extract -p secret -i testAssets/image_with_secret_message.png >> message.txt
 // or in dev:
-cargo run -- -e false -p secret -i testAssets/prestine.png >> message.txt
+cargo run -- -e extract -p secret -i testAssets/image_with_secret_message.png >> message.txt
 ```
 
 ## Recover an Encrypted String in an Image Message into a File
 
+![](./readmeAssets/extract_workflow_into_file.png)
+
 ```sh
-steganographyrs -e false -p secret -i testAssets/prestine.png >> message.txt
+steganographyrs -e extract -p secret -i testAssets/image_with_secret_message.png >> message.txt
 // or in dev:
-cargo run -- -e false -p secret -i testAssets/prestine.png >> message.txt
+cargo run -- -e extract -p secret -i testAssets/image_with_secret_message.png >> message.txt
 ```
 
 # Consumer of the Library?
 
+You use the entry function called `steganography` and you can choose the option you want to inject and extract a message by encrypting or not your message into an input image to an output message.
 
 ```rust
 use steganographyrs::steganography;
-steganography(steganography_option)
+let result = steganography(steganography_option); // Result is an option that is only filled on the extraction
 ```
 
 # As a Developer of the Library
@@ -129,7 +154,7 @@ which gnuplot
 
 ## Execute
 
-To get all options
+To get all options using `cargo run`:
 ```
 cargo run -- -help
 ```
@@ -166,7 +191,17 @@ cargo doc --open  -document-private-items
 
 ## Testing CLI
 
-All commands for the user works but instead of using `steganographyrs -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png` you need to use `cargo run -- -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png`
+All commands for the user works but instead of using 
+
+```
+steganographyrs -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png
+```
+
+You need to use:
+
+```
+cargo run -- -e true -p secret -m "My Secret Message" -i testAssets/prestine.png -o out.png
+```
 
 # Benchmark
 

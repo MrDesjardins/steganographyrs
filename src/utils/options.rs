@@ -1,5 +1,39 @@
+use clap;
+use clap::builder::TypedValueParser;
 use clap::command;
 use clap::Parser;
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub enum Mode {
+    Inject,
+    Extract,
+    Encrypt,
+    Decrypt,
+}
+
+impl std::fmt::Display for Mode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            Self::Inject => "inject",
+            Self::Extract => "extract",
+            Self::Encrypt => "encrypt",
+            Self::Decrypt => "decrypt",
+        };
+        s.fmt(f)
+    }
+}
+impl std::str::FromStr for Mode {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "inject" => Ok(Self::Inject),
+            "extract" => Ok(Self::Extract),
+            "encrypt" => Ok(Self::Encrypt),
+            "decrypt" => Ok(Self::Decrypt),
+            _ => Err(format!("Unknown mode: {s}")),
+        }
+    }
+}
 
 /// CLI arguments
 ///
@@ -7,6 +41,7 @@ use clap::Parser;
 /// and decrypt a message. The full list of options are available in the `CliData` struct.
 ///
 #[derive(Parser)]
+#[clap(name = "from_str")]
 #[command(author, version, about, long_about = None)] // Read from `Cargo.toml`
 pub struct CliData {
     /// Message to insert into the image
@@ -30,39 +65,41 @@ pub struct CliData {
     #[arg(short, long)]
     output_image_path: Option<String>,
 
-    /// Encrypt or decrypt
-    /// When true, it inserts the `message` into a copy of the  image `input_image_path`
-    ///     and output it in `output_image_path`
-    /// When false, it retrieves the message from the `input_image_path`
-    #[arg(short, long)]
-    encrypt_mode: Option<bool>,
+    /// Possible values:
+    /// "inject"= inject the message into an image.
+    /// "extract" = extract from an image the message.
+    /// "encrypt" = encrypt the message without using any image (not steganography related, utility feature).
+    /// "decrypt" = decrypt a message withotu using any image  (not steganography related, utility feature).
+    #[arg(short='e', long, value_parser = clap::builder::PossibleValuesParser::new(["inject", "extract", "encrypt", "decrypt"])
+    .map(|s| s.parse::<Mode>().unwrap()),)]
+    mode: Option<Mode>,
 }
 
 /// Options to start the steganography into encrypt or decrypt
 #[derive(Clone)]
 pub enum SteganographyOption {
-    Encrypt(SteganographyEncryptOption),
-    Decrypt(SteganographyDecryptOption),
+    InjectMessageIntoImage(SteganographyInjectOption),
+    ExtractMessageFromImage(SteganographyExtractOption),
 }
 
-/// Required options for the encryption (text to image)
+/// Required options for the injection (text to image)
 #[derive(Clone)]
-pub struct SteganographyEncryptOption {
+pub struct SteganographyInjectOption {
     pub message: String,
     pub password: Option<String>,
     pub input_image_path: String,
     pub output_image_path: String,
 }
 
-/// Required options for the decryption (image to text)
+/// Required options for the extraction (image to text)
 #[derive(Clone)]
-pub struct SteganographyDecryptOption {
+pub struct SteganographyExtractOption {
     pub password: Option<String>,
     pub input_image_path: String,
 }
 
 /// Extract from the command line (CLI) argument the option.
-/// Depending of the field *encrypt_mode*, the function returns
+/// Depending of the mode, the function returns
 /// the proper formed structure or panic telling what argument
 /// is missing
 ///
@@ -76,15 +113,15 @@ pub fn extract_options(
     args: CliData,
     piped_message: Option<String>,
 ) -> Result<SteganographyOption, String> {
-    Ok(match args.encrypt_mode {
+    Ok(match args.mode {
         Some(i) => match i {
-            true => {
+            Mode::Inject => {
                 let message = piped_message.unwrap_or_else(|| {
                     args.message
                         .unwrap_or_else(|| panic!("Message is required"))
                 });
-                SteganographyOption::Encrypt({
-                    SteganographyEncryptOption {
+                SteganographyOption::InjectMessageIntoImage({
+                    SteganographyInjectOption {
                         message: message,
                         password: args.password,
                         input_image_path: args
@@ -96,14 +133,16 @@ pub fn extract_options(
                     }
                 })
             }
-            false => SteganographyOption::Decrypt({
-                SteganographyDecryptOption {
+            Mode::Extract => SteganographyOption::ExtractMessageFromImage({
+                SteganographyExtractOption {
                     password: args.password,
                     input_image_path: args
                         .input_image_path
                         .unwrap_or_else(|| panic!("Input image is required")),
                 }
             }),
+            Mode::Encrypt => todo!(""),
+            Mode::Decrypt => todo!(""),
         },
         None => panic!("Encrypt mode is required"),
     })
