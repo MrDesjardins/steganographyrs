@@ -1,15 +1,14 @@
-use atty::Stream;
 use clap::Parser;
+use std::io::IsTerminal;
 use std::io::{self, BufRead};
 use std::process;
 use steganographyrs::options::{extract_options, CliData};
 use steganographyrs::steganography;
-
 /// CLI access to the steganography library
 fn main() {
     let mut message_from_pipe: Option<String> = None;
     // Piping, the message content is coming from the std in instead of the args.message
-    if !atty::is(Stream::Stdin) {
+    if std::io::stdin().is_terminal() {
         let mut input_message = io::stdin()
             .lock()
             .lines()
